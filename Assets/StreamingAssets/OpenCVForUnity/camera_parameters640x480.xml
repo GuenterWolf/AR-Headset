@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CameraParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <calibration_date>1/1/2024 2:14:05 AM</calibration_date>
+  <frames_count>21</frames_count>
+  <image_width>640</image_width>
+  <image_height>480</image_height>
+  <calibration_flags>131072</calibration_flags>
+  <camera_matrix>
+    <double>551.93274637684783</double>
+    <double>0</double>
+    <double>320.978026451925</double>
+    <double>0</double>
+    <double>552.903287028899</double>
+    <double>245.52260621424568</double>
+    <double>0</double>
+    <double>0</double>
+    <double>1</double>
+  </camera_matrix>
+  <distortion_coefficients>
+    <double>-0.055280457619120163</double>
+    <double>0.12915131988133136</double>
+    <double>0.001274589628291049</double>
+    <double>0.00020760076592676792</double>
+    <double>-0.16275207307210737</double>
+  </distortion_coefficients>
+  <avg_reprojection_error>0.19993488410625129</avg_reprojection_error>
+</CameraParameters>
