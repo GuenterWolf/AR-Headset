@@ -402,93 +402,93 @@ public class GameObjectManager : MonoBehaviour
                         //stereoCamera.transform.RotateAround(angryBirds.transform.position, Vector3.up, -(float)(rvec[i].y * 180 / Math.PI));
                         //stereoCamera.transform.LookAt(angryBirds.transform);
                     }
+                }
 
-                    if ((victoryFound == true || victoryRunning == true) && angryBirdsRunning == true)
-                    // "Victory" hand gesture found, throw bird
+                if ((victoryFound == true || victoryRunning == true) && angryBirdsRunning == true)
+                // "Victory" hand gesture found, throw bird
+                {
+                    victoryRunning = true;
+
+                    // Rotate the slingshot into view
+                    angryBirdsTimer += Time.deltaTime;
+                    if (angryBirdsTimer <= 2f)
                     {
-                        victoryRunning = true;
+                        slingshot.transform.Rotate(0f, 0f, Time.deltaTime * 90);
 
-                        // Rotate the slingshot into view
-                        angryBirdsTimer += Time.deltaTime;
-                        if (angryBirdsTimer <= 2f)
+                        if (showGestureRunning == false && angryBirdsTimer <= 0.5f)
                         {
-                            slingshot.transform.Rotate(0f, 0f, Time.deltaTime * 90);
+                            // Display "victory" pictogram
+                            victory.SetActive(true);
+                            StartCoroutine(ShowGesture(victory));
+                        }
+                    }
 
-                            if (showGestureRunning == false && angryBirdsTimer <= 0.5f)
-                            {
-                                // Display "victory" pictogram
-                                victory.SetActive(true);
-                                StartCoroutine(ShowGesture(victory));
-                            }
+                    // Throw bird, after slingshot rotation finish
+                    if (angryBirdsTimer > 3f && onlyOnce == true)
+                    {
+                        GetAnotherBird();
+                        bird.transform.LookAt(angryBirds.transform);
+                        bird.transform.Rotate(0f, 90f, 0f);
+                        bird.GetComponent<ConstantForce>().relativeForce = new Vector3(-120f, 0f, 0f);
+                        bird.SetActive(true);
+                        onlyOnce = false;
+                    }
+
+                    // Remove force from bird, so that he doesn't roll off the scene
+                    if (angryBirdsTimer > 3.5f && angryBirdsTimer <= 4f)
+                    {
+                        bird.GetComponent<ConstantForce>().relativeForce = new Vector3(0, 0, 0);
+                        slingshot.SetActive(false);
+                    }
+
+                    // Check if all pigs fell down to the ground
+                    if (CheckPigs(activeLevel) == true)
+                    {
+                        // All pigs fell down to the ground, start bird victory sound
+                        if (angryBirdsTimer < 1000f)
+                        {
+                            angryBirdsTimer = 1000;
+                            // Play bird victory sound
+                            audioSource.PlayOneShot(angryBirdsVictory, 1f);
                         }
 
-                        // Throw bird, after slingshot rotation finish
-                        if (angryBirdsTimer > 2f && onlyOnce == true)
+                        // Wait 7 seconds
+                        if (angryBirdsTimer > 1007f)
                         {
-                            GetAnotherBird();
-                            bird.transform.LookAt(angryBirds.transform);
-                            bird.transform.Rotate(0f, 90f, 0f);
-                            bird.GetComponent<ConstantForce>().relativeForce = new Vector3(-120f, 0f, 0f);
-                            bird.SetActive(true);
-                            onlyOnce = false;
-                        }
-
-                        // Remove force from bird, so that he doesn't roll off the scene
-                        if (angryBirdsTimer > 2.5f && angryBirdsTimer <= 3f)
-                        {
-                            bird.GetComponent<ConstantForce>().relativeForce = new Vector3(0, 0, 0);
-                            slingshot.SetActive(false);
-                        }
-
-                        // Check if all pigs fell down to the ground
-                        if (CheckPigs(activeLevel) == true)
-                        {
-                            // All pigs fell down to the ground, start bird victory sound
-                            if (angryBirdsTimer < 1000f)
-                            {
-                                angryBirdsTimer = 1000;
-                                // Play bird victory sound
-                                audioSource.PlayOneShot(angryBirdsVictory, 1f);
-                            }
-
-                            // Wait 3 seconds
-                            if (angryBirdsTimer > 1003f && angryBirdsTimer < 1003.5f)
-                            {
-                                // Switch to the next level
-                                ResetAngryBirds();
-                                Destroy(level);
-                                switch (activeLevel)
-                                {
-                                    case "Level 1":
-                                        level = Instantiate(angryBirdsLevel2, angryBirds.transform);
-                                        activeLevel = "Level 2";
-                                        audioSource.Stop();
-                                        audioSource.PlayOneShot(angryBirdsTheme2, 0.3f);
-                                        break;
-
-                                    case "Level 2":
-                                        level = Instantiate(angryBirdsLevel3, angryBirds.transform);
-                                        activeLevel = "Level 3";
-                                        audioSource.Stop();
-                                        audioSource.PlayOneShot(angryBirdsTheme3, 0.3f);
-                                        break;
-
-                                    case "Level 3":
-                                        level = Instantiate(angryBirdsLevel1, angryBirds.transform);
-                                        activeLevel = "Level 1";
-                                        audioSource.Stop();
-                                        audioSource.PlayOneShot(angryBirdsTheme1, 0.3f);
-                                        break;
-                                }
-                            }
-                        }
-                        // Not all pigs fell down to the ground, wait 3 seconds then continue with the next bird
-                        else if (angryBirdsTimer > 5f)
-                        {
+                            // Switch to the next level
                             ResetAngryBirds();
-                            // Play pig victory sound
-                            audioSource.PlayOneShot(angryBirdsPigVictory, 1f);
+                            Destroy(level);
+                            switch (activeLevel)
+                            {
+                                case "Level 1":
+                                    level = Instantiate(angryBirdsLevel2, angryBirds.transform);
+                                    activeLevel = "Level 2";
+                                    audioSource.Stop();
+                                    audioSource.PlayOneShot(angryBirdsTheme2, 0.3f);
+                                    break;
+
+                                case "Level 2":
+                                    level = Instantiate(angryBirdsLevel3, angryBirds.transform);
+                                    activeLevel = "Level 3";
+                                    audioSource.Stop();
+                                    audioSource.PlayOneShot(angryBirdsTheme3, 0.3f);
+                                    break;
+
+                                case "Level 3":
+                                    level = Instantiate(angryBirdsLevel1, angryBirds.transform);
+                                    activeLevel = "Level 1";
+                                    audioSource.Stop();
+                                    audioSource.PlayOneShot(angryBirdsTheme1, 0.3f);
+                                    break;
+                            }
                         }
+                    }
+                    // Not all pigs fell down to the ground, wait 4 seconds then continue with the next bird
+                    else if (angryBirdsTimer > 7f && angryBirdsTimer < 1000f)
+                    {
+                        ResetAngryBirds();
+                        // Play pig victory sound
+                        audioSource.PlayOneShot(angryBirdsPigVictory, 1f);
                     }
                 }
             }
